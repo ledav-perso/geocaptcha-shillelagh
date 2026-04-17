@@ -12,3 +12,21 @@ config.ini
 config_*.ini
 config-*.ini
 test.ini
+
+# Python build artefacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Caches
+*.sqlite
+*.db

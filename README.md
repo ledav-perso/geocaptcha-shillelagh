@@ -1,49 +1,191 @@
-# Modèle de ReadMe
+# geocaptcha-shillelagh
 
-Ci-dessous une proposition de readme pour tout projet
+A [Shillelagh](https://github.com/betodealmeida/shillelagh) adapter that exposes the
+[GeoCaptcha REST API](https://github.com/IGNF/GeoCaptchaAPI) (by IGNF) as virtual SQL
+tables, enabling direct querying from [Apache Superset](https://superset.apache.org/)
+or any other tool that supports Shillelagh.
 
 
-## Description/Résumé du projet
+## Description
 
-Dans cette section, on décrit la vision générale du projet ainsi que ses objectifs à destination des futurs utilisateurs et des développeurs.
+The GeoCaptcha API (developed by IGNF — Institut National de l'Information Géographique
+et Forestière) provides geographic CAPTCHA challenges where users prove they are human
+by identifying locations on a map.  The admin API exposes two key resources:
 
-Pour ce dépôt : 
+| Resource  | Description                                    |
+|-----------|------------------------------------------------|
+| `session` | Captcha-solving session records with outcomes  |
+| `cuser`   | API client users and their access keys         |
 
-Ce dépôt permet de répertorier les différents éléments essentiels dans un dépôt SIDC :
-* ce ReadMe
-* des modèles de tickets type pour des ajouts de fonctionnalité, réparation de bug, ajout de documentation, maintenance/montée de version...
-* des milestones témoins (ex: backlog, sprint1...)
-* des exemples de github Actions CI/CD (lancement de test, build d'images...)
-* des exemples de label pour les futurs tickets
+This package provides two Shillelagh adapters — one per resource — so you can query
+them with standard SQL:
+
+```sql
+-- Success rate per challenge
+SELECT challenge_name,
+       COUNT(*)                                           AS total,
+       SUM(CASE WHEN success THEN 1 ELSE 0 END)          AS successes,
+       AVG(duration)                                      AS avg_duration_s
+FROM   "https://geocaptcha.example.com/api/v1/admin/session"
+GROUP  BY challenge_name;
+
+-- List all API users
+SELECT app_id, email, role
+FROM   "https://geocaptcha.example.com/api/v1/admin/cuser";
+```
 
 
 ## Installation
 
-La procédure d'installation du projet doit être décrite dans cette section ou dans un fichier complémentaire dont le lien est présent ici.
+```bash
+pip install geocaptcha-shillelagh
+```
+
+### Requirements
+
+- Python ≥ 3.9
+- `shillelagh >= 1.4`
+- `python-dateutil >= 2.8`
+- `requests-cache >= 1.0`
 
 
-## Documentation développeurs
+## Usage
 
-Lien vers la documentation pour les développeurs, à la fois pour maintenir le projet, le déployer et ajouter de nouvelles fonctionnalités. Schémas UML...
+### Python DB-API
+
+```python
+from shillelagh.backends.apsw.db import connect
+
+conn = connect(
+    ":memory:",
+    adapter_kwargs={
+        "geocaptchasessionadapter": {
+            "api_key": "YOUR_API_KEY",
+            "app_id":  "YOUR_APP_ID",
+        },
+        "geocaptchacuseradapter": {
+            "api_key": "YOUR_API_KEY",
+            "app_id":  "YOUR_APP_ID",
+        },
+    },
+)
+
+cursor = conn.cursor()
+cursor.execute(
+    'SELECT * FROM "https://geocaptcha.example.com/api/v1/admin/session"'
+)
+for row in cursor:
+    print(row)
+```
+
+### SQLAlchemy
+
+```python
+from sqlalchemy import create_engine, text
+
+engine = create_engine(
+    "shillelagh://",
+    connect_args={
+        "adapter_kwargs": {
+            "geocaptchasessionadapter": {
+                "api_key": "YOUR_API_KEY",
+                "app_id":  "YOUR_APP_ID",
+            },
+        }
+    },
+)
+
+with engine.connect() as con:
+    result = con.execute(
+        text('SELECT * FROM "https://geocaptcha.example.com/api/v1/admin/session"')
+    )
+    for row in result:
+        print(row)
+```
+
+### Apache Superset
+
+1. Add a new database connection in Superset with the SQLAlchemy URI:
+   ```
+   shillelagh://
+   ```
+2. Under **Advanced → Other → Engine Parameters**, add:
+   ```json
+   {
+     "connect_args": {
+       "adapter_kwargs": {
+         "geocaptchasessionadapter": {
+           "api_key": "YOUR_API_KEY",
+           "app_id":  "YOUR_APP_ID"
+         },
+         "geocaptchacuseradapter": {
+           "api_key": "YOUR_API_KEY",
+           "app_id":  "YOUR_APP_ID"
+         }
+       }
+     }
+   }
+   ```
+3. Use the full API URL as the table name in SQL Lab:
+   ```sql
+   SELECT *
+   FROM "https://geocaptcha.example.com/api/v1/admin/session"
+   LIMIT 100;
+   ```
 
 
-## L'arborescence du projet
+## Virtual table columns
 
-Exemple d'arborescence de projet :
+### `session` table
 
-* `.github/` : dossier contenant les modèles d'issues et github actions ;
-* `.vscode/` : dossier contenant une configuration vscode pour le projet;
-* `doc/` : dossier contenant des fichiers .md de documentation (ex: install.md) ;
-* `tests/`: scripts et explications pour lancer les tests ;
-* `README.md` : ce fichier
+| Column           | Type     | Description                                          |
+|------------------|----------|------------------------------------------------------|
+| `session_id`     | String   | Unique session identifier                            |
+| `success`        | Boolean  | `true` if the user solved the captcha                |
+| `begin`          | DateTime | Session start time                                   |
+| `end`            | DateTime | Session end time                                     |
+| `duration`       | Float    | Duration in seconds (`NULL` if timestamps missing)   |
+| `challenge_name` | String   | Name of the geographic challenge presented           |
 
-## Contacts du projets
+### `cuser` table
 
-Ici on met la liste des personnes qui travaillent sur ce projet et le maintiennent à jour.
+| Column    | Type   | Description                              |
+|-----------|--------|------------------------------------------|
+| `app_id`  | String | Unique application identifier / key name |
+| `email`   | String | Contact e-mail address                   |
+| `referer` | String | Allowed HTTP `Referer` domain            |
+| `role`    | String | Role (`user`, `admin`, …)                |
 
 
-|Nom|Prénom|mail|fonction|
-|---|---|---|---|
-|   |   |   |   |
-|   |   |   |   |
-|   |   |   |   |
+## Authentication
+
+Credentials are **never** embedded in the URI.  Pass them as adapter connection
+arguments (`api_key` and `app_id`) as shown in the examples above.
+
+
+## Project structure
+
+```
+.
+├── src/
+│   └── geocaptcha_shillelagh/
+│       ├── __init__.py
+│       └── adapter.py      # GeoCaptchaSessionAdapter & GeoCaptchaCUserAdapter
+├── tests/
+│   └── test_adapter.py
+├── pyproject.toml
+└── README.md
+```
+
+
+## Development
+
+```bash
+# Clone & install in editable mode with dev extras
+git clone https://github.com/ledav-perso/geocaptcha-shillelagh.git
+cd geocaptcha-shillelagh
+pip install -e ".[dev]"
+
+# Run tests
+pytest
+```
