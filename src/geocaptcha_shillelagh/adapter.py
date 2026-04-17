@@ -154,7 +154,8 @@ class GeoCaptchaSessionAdapter(Adapter):
     ``begin``           DateTime     Session start time (ISO-8601 from API).
     ``end``             DateTime     Session end time (ISO-8601 from API).
     ``duration``        Float        ``end - begin`` in seconds (``NULL`` if either
-                                     timestamp is absent or the value is negative).
+                                     timestamp is absent, unparseable, or the computed
+                                     value is negative).
     ``challenge_name``  String       Name of the geographic challenge presented.
     =================== ============ ==============================================
     """
@@ -299,7 +300,8 @@ class GeoCaptchaCUserAdapter(Adapter):
     =========== ====== ======================================================
     ``app_id``  String Unique application identifier / key name.
     ``email``   String Contact e-mail address for the key holder.
-    ``referer`` String HTTP ``Referer`` domain allowed for this key.
+    ``referer`` String HTTP ``Referer`` domain allowed for this key (note: the HTTP
+                       standard intentionally uses the misspelling *referer*).
     ``role``    String Role assigned to the key (e.g. ``"user"``, ``"admin"``).
     =========== ====== ======================================================
     """
