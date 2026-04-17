@@ -1,0 +1,14 @@
+{
+    // Examples d'extensions VS Code à utiliser pour un projet Symfony
+    "recommendations": [
+        "junstyle.php-cs-fixer",
+        "mblode.twig-language",
+        "streetsidesoftware.code-spell-checker",
+        "streetsidesoftware.code-spell-checker-french",
+        "dbaeumer.jshint",
+        "bmewburn.vscode-intelephense-client",
+        "mde.select-highlight-minimap",
+        "shardulm94.trailing-spaces",
+        "nixon.env-cmd-file-syntax",
+    ]
+}
