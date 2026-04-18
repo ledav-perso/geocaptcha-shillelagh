@@ -1,119 +1,37 @@
 # geocaptcha-shillelagh
 
-## Objectif 
+## Contexte 
 
-fournir un connecteur dédié à l'API Geocaptcha pour Apache superset (https://superset.apache.org/)
+besoin d'un rapport d'exploitation pour le service Geocaptcha, utilisation de la solution [Apache Superset](https://superset.apache.org/)
 
-Développement basé sur l'utilisation du driver Shillelagh (https://github.com/betodealmeida/shillelagh)
+tests du connecteur genericjsonapi du driver [Shillelagh](https://github.com/betodealmeida/shillelagh)) pour connecter l'API admin Geocaptcha
 
+RETEX : [test connecteur generic JSON API](./docs/RETEX_genericjsonapi.md)
 
-## RETEX driver Shillelagh avec le connecteur Generic JSON API 
-
-### Référence :
-- https://shillelagh.readthedocs.io/en/stable/adapters.html#generic-json-apis
-- https://superset.apache.org/developer-docs/contributing/development-setup/#docker-compose-recommended
-- https://preset.io/blog/accessing-apis-with-superset/
-- https://github.com/qleroy/shillelagh-gristapi/tree/main
-- https://stackoverflow.com/questions/79454470/integrate-superset-with-api-using-shillelagh
-
-### Installation (docker compose) 
-
-clonage projet Github apache superset
-
-Ajout du driver Shillelagh dans le code superset : 
-
-./docker/requirements-local.txt
-```
-shillelagh[genericjsonapi]
-```
-
-configuration (nécessaire ?) pour autoriser les extensions qui ont besoin d'accéder au système de fichier et à la base de données de configuration
-./docker/pythonpath_dev/superset_config.py
-```python
-...
-
-# évite de bloquer le driver SHillelagh pour les connecteurs qui ont besoin d'accéder au système de fichier 
-# nécessaire sauf si :
-# on place shillelagh+safe:// dans l'URI de connexion
-# le connecteur déclare qu'il est safe dans la déclaration de la classe :
-#    # adapter doesn’t read or write from the filesystem we can mark it as safe.
-#    safe = True
-PREVENT_UNSAFE_DB_CONNECTIONS = False
-
-...
-```
+Besoin de développer un connecteur dédié pour profiter des fonctionalitées suivantes :
+- pagination
+- formatage des champs (en particulier les horodatages)
+- gestion des nested objects (en particulier le champ captcha de l'objet session)
+- création de champs calculés (résultats de jointures entre sessions et captchas puis entre sessions et cusers)
 
 
-```bash
-docker compose up --build
-```
+## Objectif
 
-après lancement de l'instance superset, ajouter une base de données (Settings -> Database connections)
+fournir un connecteur dédié à l'API Geocaptcha pour Apache superset (https://superset.apache.org/) basé sur l'utilisation du driver Shillelagh (https://github.com/betodealmeida/shillelagh)
 
-choisir database Shillelagh
-
-paramètres standards :
-
-![paramètres standards](./ressources/parametres-standards.png)
-
-paramètres avancés :
-
-![paramètres avancés](./ressources/parametres-avances.png)
-
-exemple pour Engine parameters : 
-```json
-{
-  "connect_args":
-  {
-    "adapters":["genericjsonapi"],
-    "adapter_kwargs":
-    {
-      "genericjsonapi":
-      {
-        "request_headers":
-        {
-          "x-api-key": "******",
-          "x-app-id": "*****"
-         }
-       }
-     }
-   }
-}
-```
-
-tester dans SQL Lab :
-
-![SQL LAB](./ressources/sqllab.png)
-
-exemple de requête : 
-
-SELECT * from "http://flocon2:3000/api/v1/admin/session?#$.sessions[*]"
-
-Endpoint API Geocaptcha = http://flocon2:3000
-path = /api/v1/admin/session
-$.sessions[*] => extraire la collection derrière le champ  session de la réponse
+Construire un rapport d'exploitation sous forme d'un tableau de bord Apache superset
 
 
-### conclusion
+## API admin Geocaptcha
 
-- requête réussie ;-)
-- pas de reconnaissance des champs date / time (ISO 8601) fournis
-    - voir utilisation du templating Jinja côté apache superset (https://superset.apache.org/user-docs/using-superset/sql-templating)
-- pas de gestion de la pagination
-- système de cache recommandé
-    - pas de REDIS, valkey, mais il y a un driver duckdb ?
+[Spécifications de l'API admin Geocaptcha](https://github.com/IGNF/GeoCaptchaAPI/blob/main/src/spec/geocaptcha-openapi.yaml)
 
-
-## Description
-
-The GeoCaptcha API (developed by IGNF — Institut National de l'Information Géographique
-et Forestière) provides geographic CAPTCHA challenges where users prove they are human
-by identifying locations on a map.  The admin API exposes two key resources:
 
 | Resource  | Description                                    |
 |-----------|------------------------------------------------|
-| `session` | Captcha-solving session records with outcomes  |
-| `cuser`   | API client users and their access keys         |
+| `session` | sessions de captchas tentées  |
+| `cuser`   | applications clientes enregistrées          |
+| `kingpin` | captchas préenregistrés |
 
 This package provides two Shillelagh adapters — one per resource — so you can query
 them with standard SQL:

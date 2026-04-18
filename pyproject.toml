@@ -9,18 +9,12 @@ description = "Shillelagh adapter for the GeoCaptcha REST API (IGNF)"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.9"
-keywords = ["shillelagh", "geocaptcha", "superset", "sql", "adapter", "ign", "ignf"]
+keywords = ["shillelagh", "geocaptcha", "superset", "sql", "adapter", "ignf"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Topic :: Database",
-    "Topic :: Internet :: WWW/HTTP",
 ]
 dependencies = [
     "shillelagh>=1.4",
@@ -36,8 +30,10 @@ dev = [
 ]
 
 [project.entry-points."shillelagh.adapter"]
-geocaptchasessionadapter = "geocaptcha_shillelagh.adapter:GeoCaptchaSessionAdapter"
-geocaptchacuseradapter = "geocaptcha_shillelagh.adapter:GeoCaptchaCUserAdapter"
+geocaptchasessionadapter = "geocaptcha_shillelagh.session:GeocaptchaSessionAdapter"
+geocaptchacuseradapter = "geocaptcha_shillelagh.cuser:GeocaptchaCuserAdapter"
+geocaptchakingpinadapter = "geocaptcha_shillelagh.kingpin:GeocaptchaKingpinAdapter"
+
 
 [project.urls]
 Homepage = "https://github.com/ledav-perso/geocaptcha-shillelagh"
