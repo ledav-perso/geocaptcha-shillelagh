@@ -3,6 +3,7 @@ import urllib.parse
 from collections.abc import Iterator
 from datetime import date, datetime, timedelta, timezone
 from typing import Any, Optional, Union, cast
+from dataclasses import dataclass
 
 import dateutil.parser
 import dateutil.tz
@@ -18,17 +19,19 @@ _logger = logging.getLogger(__name__)
 
 _GC_PREFIX = "geocaptcha://"
 _GC_SESSION = "session"
+_GC_CUSER = "cuser"
+_GC_KINGPIN = "kingpin"
+
+
+@dataclass
+class Connexion:
+    base_url: str
+    app_id: str
+    api_key: str
 
 
 class GeocaptchaAPI(Adapter):
     safe = True
-
-    # Since the adapter doesn't return exact data (see the time columns below)
-    # implementing limit/offset is not worth the trouble.
-    supports_limit = False
-    supports_offset = False
-
-    time = DateTime(filters=[Range], order=Order.ASCENDING, exact=False)
 
     @staticmethod
     def supports(uri: str, fast: bool = True, **kwargs: Any) -> Optional[bool]:
@@ -39,12 +42,8 @@ class GeocaptchaAPI(Adapter):
     def parse_uri(uri: str) -> str:
         return uri
 
-    def __init__(self, base_url: str, app_id: str, api_key: str):
+    def __init__(self):
         super().__init__()
-
-        self.base_url = base_url
-        self.app_id = app_id
-        self.api_key = api_key
 
     def get_data(  # pylint: disable=too-many-locals
         self,
@@ -52,27 +51,14 @@ class GeocaptchaAPI(Adapter):
         order: list[tuple[str, RequestedOrder]],
         **kwargs: Any,
     ) -> Iterator[Row]:
+        conn = _get_headers(kwargs)
+        yeld({id: 1, info: "réussite"})
 
-        while start <= end:
-            url = "https://api.weatherapi.com/v1/history.json"
-            params = {"key": self.api_key, "q": self.location, "dt": start}
+    @staticmethod
+    def _get_headers(**kwargs: Any) -> Connexion:
+        request_headers = kwargs.get("request_headers", {})
+        base_url = request_headers.base_url | None
+        app_id = request_headers.app_id | None
+        api_key = request_headers.api_key | None
 
-            query_string = urllib.parse.urlencode(params)
-            _logger.info("GET %s?%s", url, query_string)
-
-            response = self._session.get(url, params=params)
-            if response.ok:
-                payload = response.json()
-                local_timezone = dateutil.tz.gettz(
-                    payload["location"]["tz_id"])
-                for record in payload["forecast"]["forecastday"][0]["hour"]:
-                    row = {column: record[column]
-                           for column in self.get_columns()}
-                    row["time"] = dateutil.parser.parse(record["time"]).replace(
-                        tzinfo=local_timezone,
-                    )
-                    row["rowid"] = int(row["time_epoch"])
-                    _logger.debug(row)
-                    yield row
-
-            start += timedelta(days=1)
+        return Connexion(base_url, app_id, api_key)
