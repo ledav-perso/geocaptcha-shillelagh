@@ -5,10 +5,6 @@ Exposes GeoCaptcha admin endpoints as virtual SQL tables that can be
 queried from Apache Superset (or any other shillelagh-compatible tool).
 """
 
-from geocaptcha_shillelagh.session import GeocaptchaSessionAdapter
-from geocaptcha_shillelagh.cuser import GeocaptchaCuserAdapter
-from geocaptcha_shillelagh.kingpin import GeocaptchaKingpinAdapter
+from geocaptcha_shillelagh.adapter import GeocaptchaAdapter
 
-__all__ = ["GeoCaptchaSessionAdapter",
-           "GeoCaptchaCUserAdapter",
-           "GeoCaptchaKingpinAdapter"]
+__all__ = ["GeocaptchaAdapter"]

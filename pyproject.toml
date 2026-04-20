@@ -30,10 +30,7 @@ dev = [
 ]
 
 [project.entry-points."shillelagh.adapter"]
-geocaptchasessionadapter = "geocaptcha_shillelagh.session:GeocaptchaSessionAdapter"
-geocaptchacuseradapter = "geocaptcha_shillelagh.cuser:GeocaptchaCuserAdapter"
-geocaptchakingpinadapter = "geocaptcha_shillelagh.kingpin:GeocaptchaKingpinAdapter"
-
+geocaptchaapi = "geocaptcha_shillelagh.adapter:GeocaptchaAdapter"
 
 [project.urls]
 Homepage = "https://github.com/ledav-perso/geocaptcha-shillelagh"
