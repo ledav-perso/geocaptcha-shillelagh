@@ -1,5 +1,6 @@
 import logging
 import urllib.parse
+import re
 from collections.abc import Iterator
 from datetime import date, datetime, timedelta, timezone
 from typing import Any, Optional, Union, cast
@@ -21,6 +22,7 @@ _GC_PREFIX = "geocaptcha://"
 _GC_SESSION = "session"
 _GC_CUSER = "cuser"
 _GC_KINGPIN = "kingpin"
+_P = re.compile('^geocaptcha://(session|cuser|kingpin)$')
 
 
 @dataclass
@@ -30,19 +32,26 @@ class Connexion:
     api_key: str
 
 
-class GeocaptchaAPI(Adapter):
+class GeocaptchaAdapter(Adapter):
     safe = True
 
     @staticmethod
-    def supports(uri: str, fast: bool = True, **kwargs: Any) -> Optional[bool]:
-        print("gc / supports")
+    def supports(uri: str, fast: bool, **kwargs: Any) -> bool:
+        _logger.info('gc / supports')
+        _logger.debug(f'uri: {uri}')
         return uri.startswith(_GC_PREFIX)
 
     @staticmethod
-    def parse_uri(uri: str) -> str:
-        return uri
+    def parse_uri(uri: str) -> Tuple[Optional[str]]:
+        _logger.info('gc / parse_uri')
+        table = _P.match(uri)
+        if table is not None:
+            return table.groups()[0]
+        else:
+            return None
 
     def __init__(self):
+        _logger.info('gc / __init__')
         super().__init__()
 
     def get_data(  # pylint: disable=too-many-locals
@@ -51,11 +60,13 @@ class GeocaptchaAPI(Adapter):
         order: list[tuple[str, RequestedOrder]],
         **kwargs: Any,
     ) -> Iterator[Row]:
+        _logger.info('gc / get_data')
         conn = _get_headers(kwargs)
         yeld({id: 1, info: "réussite"})
 
     @staticmethod
     def _get_headers(**kwargs: Any) -> Connexion:
+        logger.info('gc / _get_headers')
         request_headers = kwargs.get("request_headers", {})
         base_url = request_headers.base_url | None
         app_id = request_headers.app_id | None
