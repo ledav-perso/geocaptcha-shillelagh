@@ -8,3 +8,12 @@ pip install --upgrade pip
 pip install -r requirements.txt
 
 ![Python: select interpreter](./python_interpreter.png)
+
+
+unopiniated formating :
+
+python -m black src
+
+linting :
+
+python -m pylint src
