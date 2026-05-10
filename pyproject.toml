@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "geocaptcha-shillelagh"
-version = "0.2.0"
+version = "0.2.1"
 description = "Shillelagh adapter for the GeoCaptcha REST API (IGNF)"
 readme = "README.md"
 license = { text = "MIT" }
@@ -30,7 +30,7 @@ dev = [
 ]
 
 [project.entry-points."shillelagh.adapter"]
-geocaptchasessionapi = "geocaptcha_shillelagh.session:GeocaptchaSessionAdapter"
+geocaptcha = "geocaptcha_shillelagh.adapter:GeocaptchaSessionAdapter"
 
 [project.urls]
 Homepage = "https://github.com/ledav-perso/geocaptcha-shillelagh"

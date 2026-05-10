@@ -33,6 +33,15 @@ superset_config.py
 PREVENT_UNSAFE_DB_CONNECTIONS = False
 ```
 
+# TODO pas nécessaire :
+
+cd ~/sources/superset/docker
+
+requirements-local.txt
+``̀
+shillelagh[genericjsonapi]
+``̀
+
 git clone https://ledav-perso@github.com/ledav-perso/geocaptcha-shillelagh.git
 
 cd ~/sources/superset
