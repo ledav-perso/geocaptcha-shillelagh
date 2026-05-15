@@ -1,4 +1,6 @@
-Lister les plugins disponibles dans shillelagh
+# FAQ
+
+## Lister les plugins disponibles dans shillelagh
 
 référence :
 - https://packaging.python.org/en/latest/guides/creating-and-discovering-plugins/
@@ -9,9 +11,9 @@ discovered_plugins = entry_points(group='shillelagh.adapter')
 print(discovered_plugins)
 ```
 
-
 ```bash
 docker compose exec -it superset bash
+
 root@1bd14783353a:/app# python
 Python 3.11.14 (main, Feb 24 2026, 19:44:43) [GCC 14.2.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
@@ -36,10 +38,54 @@ ryPoint(name='virtualmemory', value='shillelagh.adapters.memory.virtual:VirtualM
 >>> exit()
 ```
 
+ou
 
 ```python
 from importlib.metadata import entry_points
 eps = entry_points(group='shillelagh.adapter')
 for entry in eps:
     print(f"Nom: {entry.name}, Valeur: {entry.value}")
+```
+
+## Injecter collection récupérée dans l'env. de développement
+
+**optionnel : supprimer la collection sessions de la base Mongo :**
+
+```bash
+docker run -it --rm --net developpement_geocaptcha-dev alpine/mongosh mongosh mongodb://geocaptcha:[redacted]@172.19.0.3:27017/geocaptcha
+
+Current Mongosh Log ID: 6a04cde05a5c2540aba637b1
+Connecting to:          mongodb://<credentials>@172.19.0.3:27017/geocaptcha?directConnection=true&appName=mongosh+2.0.2
+Using MongoDB:          7.0.28
+Using Mongosh:          2.0.2
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+
+To help improve our products, anonymous usage data is collected and sent to MongoDB periodically (https://www.mongodb.com/legal/privacy-policy).
+You can opt-out by running the disableTelemetry() command.
+
+
+Deprecation warnings:
+  - Using mongosh with Node.js versions lower than 20.0.0 is deprecated, and support may be removed in a future release.
+See https://www.mongodb.com/docs/mongodb-shell/install/#supported-operating-systems for documentation on supported platforms.
+
+geocaptcha> db.sessions.drop()
+true
+geocaptcha> exit()
+```
+
+**importer les sessions :**
+
+```bash
+docker run -it --rm --net developpement_geocaptcha-dev -v ./api:/jeu alpine/mongosh bash
+
+b457617cd309:/# mongoimport -v --collection=sessions --db=geocaptcha --uri 'mongodb://geocaptcha:pAssw0rd@172.19.0.3:27017/' --file=jeu/sessions.json --jsonArray
+2026-05-13T19:16:11.627+0000    using write concern: &{majority false 0}
+2026-05-13T19:16:11.639+0000    filesize: 1108413 bytes
+2026-05-13T19:16:11.639+0000    using fields:
+2026-05-13T19:16:11.639+0000    connected to: mongodb://[**REDACTED**]@172.19.0.3:27017/
+2026-05-13T19:16:11.639+0000    ns: geocaptcha.sessions
+2026-05-13T19:16:11.639+0000    connected to node type: standalone
+2026-05-13T19:16:11.737+0000    1000 document(s) imported successfully. 0 document(s) failed to import.
 ```

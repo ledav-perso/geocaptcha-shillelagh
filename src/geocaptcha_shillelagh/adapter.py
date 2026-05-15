@@ -266,23 +266,29 @@ class GeocaptchaSessionAdapter(Adapter):
                 current_objs = objs
                 branches = chain[:-1]
                 leaf = chain[-1]
-                _logger.debug("branches: %s, leaf: %s", branches, leaf)
                 for key in branches:
                     _logger.debug("recherche %s", key)
                     if key in current_objs:
                         current_objs = current_objs[key]
                     else:
-                        raise ProgrammingError(
-                            f"Error: branch {key} of {value} unavailable in API response : {objs}",
+                        _logger.info(
+                            "branch %s of %s unavailable in API response : %s",
+                            key,
+                            value,
+                            objs,
                         )
+                        current_objs = None
 
-                _logger.debug("recherche de %s", leaf)
-                if leaf in current_objs:
+                if isinstance(current_objs, dict) and leaf in current_objs:
                     objs[value] = current_objs[leaf]
                 else:
-                    raise ProgrammingError(
-                        f"Error: field {leaf} of {value} unavailable in API response : {objs}",
+                    _logger.info(
+                        "field %s of %s unavailable in API response : %s",
+                        leaf,
+                        value,
+                        objs,
                     )
+                    objs[value] = None
 
             for key, value in _GC_FIELDS.items():
                 _logger.debug("traitement de %s, %s", key, value)

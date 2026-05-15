@@ -1,53 +1,63 @@
+# RETEX driver Shillelagh avec le connecteur Generic JSON API
 
-## Geocaptcha
-
-**installation avec les jeux de données test:**
-
-INITIAL_DATA=true docker compose -f compose-local.yaml up -d
-
-**attendre que tout soit opérationnel :**
-
-docker compose -f compose-local.yaml ps
-
-**arrêter le portail démo car il utilise l'un des ports de service superset :**
-
-docker compose -f compose-local.yaml stop demo
-
-**suivre l'activité de l'API :**
-
-docker compose -f compose-local.yaml logs api -f
-
-
-# superset & Shillelagh & geocaptcha adapter
-
-git clone superset
-
-**paramétrage demandé par Shillelagh :**
-
-cd ~/sources/superset/docker/pythonpath_dev/
-
-superset_config.py
-```
+configuration (nécessaire ?) pour autoriser les extensions qui ont besoin d'accéder au système de fichier et à la base de données de configuration
+./docker/pythonpath_dev/superset_config.py
+```python
 ...
 
+# évite de bloquer le driver SHillelagh pour les connecteurs qui ont besoin d'accéder au système de fichier
+# nécessaire sauf si :
+# on place shillelagh+safe:// dans l'URI de connexion
+# le connecteur déclare qu'il est safe dans la déclaration de la classe :
+#    # adapter doesn’t read or write from the filesystem we can mark it as safe.
+#    safe = True
 PREVENT_UNSAFE_DB_CONNECTIONS = False
+
+...
 ```
 
-# TODO pas nécessaire :
+et ajout package geocaptcha-shillelagh
 
-cd ~/sources/superset/docker
 
-requirements-local.txt
-``̀
-shillelagh[genericjsonapi]
-``̀
+après lancement de l'instance superset, ajouter une base de données (Settings -> Database connections)
 
-git clone https://ledav-perso@github.com/ledav-perso/geocaptcha-shillelagh.git
+choisir database Shillelagh
 
-cd ~/sources/superset
+paramètres standards :
 
-docker compose up --build
+![paramètres standards](./ressources/parametres-standards.png)
 
-docker compose exec -it superset bash
+paramètres avancés :
 
-docker compose logs superset
+![paramètres avancés](./ressources/parametres-avances.png)
+
+placer dans Engine parameters :
+
+```json
+{
+  "connect_args":
+  {
+    "adapters":["geocaptcha"],
+    "adapter_kwargs":
+    {
+      "geocaptcha":
+      {
+        "base_url":"http://flocon2:3000/api/v1/admin",
+        "app_id":"admin",
+        "api_key":"**********************************",
+        "log_level":"ERROR",
+        "page_size":1000
+      }
+    }
+  }
+}
+
+```
+
+paramètre | valeur par défaut | description
+----- | ----- | ----------
+base_url | https://geocaptcha.ign.fr/api/v1/admin | Endpoint API Geocaptcha
+app_id | NA | compte admin
+api_key | NA | mdp admin
+log_level | ERROR | log level du composant
+page_size | 1000 | nombre de documents extraits

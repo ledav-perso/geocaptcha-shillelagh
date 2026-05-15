@@ -1,4 +1,6 @@
-# API Geocaptcha : collections
+# API Geocaptcha : collection sessions
+
+fichier responses.json donne un exemple de réponse de l'API Geocaptcha
 
 ```json
 {
