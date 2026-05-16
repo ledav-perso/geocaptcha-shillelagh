@@ -122,6 +122,8 @@ _GC_NESTED_FIELDS = [
 # default pagination size
 _GC_PAGE_SIZE = 1000
 
+# extract cursor from URL
+_GC_URI_CURSOR = re.compile(r"cursor=(\d+)")
 
 # ---------------------------
 # Adapter
@@ -221,10 +223,10 @@ class GeocaptchaSessionAdapter(Adapter):
         returns data requested
 
         data ordered with newerFirst
-        no pagination
+        pagination
         no cache
         """
-        _logger.info("def get_rows")
+        _logger.info("def get_data")
         _logger.debug(
             "bounds: %s, requested_columns: %s, kwargs: %s",
             bounds,
@@ -232,73 +234,115 @@ class GeocaptchaSessionAdapter(Adapter):
             kwargs,
         )
 
+        cursor = None
+        page_number = 0
+        while True:
+            payload = self._prepare_request(cursor)
+            page_number += 1
+
+            if _GC_PATH not in payload:
+                _logger.error("response API without sessions: %s", payload)
+                break
+
+            sessions = payload[_GC_PATH]
+
+            if len(sessions) == 0:
+                _logger.debug("no rows left")
+                break
+
+            _logger.debug(
+                "page: %d, sessions: %d returned on %d total sessions",
+                page_number,
+                len(sessions),
+                payload["nbTotalObjects"],
+            )
+
+            for i, obj in enumerate(sessions):
+                yield self._parse_row(i, obj)
+
+            if "next" in payload:
+                matched = _GC_URI_CURSOR.search(payload["next"])
+                if matched is not None:
+                    cursor = matched.group(1)
+                else:
+                    _logger.debug("end of pagination")
+                    break
+            else:
+                _logger.error("no next field in payload: %s", payload)
+
+    def _prepare_request(self, cursor: Optional[str]) -> dict:
+        """prepares URL, requests endpoint and returns response"""
         url = f"{self.base_url}/{self.collection}"
         # TODO : redact sensitive data
         headers = {"x-app-id": self.app_id, "x-api-key": self.api_key}
         timeout = 3
         _logger.debug("request : %s, headers: %s", url, headers)
+        params = {
+            "nbObjects": self.page_size,
+            "order": "newerFirst",
+            "paginated": "true",
+        }
+        if cursor is not None:
+            params["cursor"] = cursor
+
         response = requests.get(
             url,
-            params={"nbObjects": self.page_size, "order": "newerFirst"},
             headers=headers,
+            params=params,
             timeout=timeout,
         )
         payload = response.json()
-        _logger.debug("payload: %s", payload)
         if not response.ok:
             raise ProgrammingError(f"Error: HTTP {response.status_code} / {payload}")
 
-        _logger.debug(
-            "sessions: %d returned on %d available",
-            payload["nbObjects"],
-            payload["nbTotalObjects"],
-        )
+        return payload
 
+    def _parse_row(self, num: int, obj: dict) -> dict:
+        """parse Geocaptcha row for shillelagh"""
         output = {}
-        for i, objs in enumerate(payload[_GC_PATH]):
-            _logger.debug("# %d, %s", i, objs)
-            output["rowid"] = i
+        # _logger.debug("# %d, %s", i, obj)
+        output["rowid"] = num
 
-            # nested fields
-            for value in _GC_NESTED_FIELDS:
-                _logger.debug("recherche de %s", value)
-                chain = value.split(sep="_")
-                current_objs = objs
-                branches = chain[:-1]
-                leaf = chain[-1]
-                for key in branches:
-                    _logger.debug("recherche %s", key)
-                    if key in current_objs:
-                        current_objs = current_objs[key]
-                    else:
-                        _logger.info(
-                            "branch %s of %s unavailable in API response : %s",
-                            key,
-                            value,
-                            objs,
-                        )
-                        current_objs = None
-
-                if isinstance(current_objs, dict) and leaf in current_objs:
-                    objs[value] = current_objs[leaf]
+        # nested fields
+        for value in _GC_NESTED_FIELDS:
+            # _logger.debug("recherche de %s", value)
+            chain = value.split(sep="_")
+            current_obj = obj
+            branches = chain[:-1]
+            leaf = chain[-1]
+            for key in branches:
+                # _logger.debug("recherche %s", key)
+                if key in current_obj:
+                    current_obj = current_obj[key]
                 else:
-                    _logger.info(
-                        "field %s of %s unavailable in API response : %s",
-                        leaf,
-                        value,
-                        objs,
-                    )
-                    objs[value] = None
+                    #    _logger.info(
+                    #        "branch %s of %s unavailable in API response : %s",
+                    #        key,
+                    #        value,
+                    #        obj,
+                    #    )
+                    current_obj = None
 
-            for key, value in _GC_FIELDS.items():
-                _logger.debug("traitement de %s, %s", key, value)
-                if key in objs:
-                    if objs[key] is not None:
-                        output[key] = objs[key]
-                else:
-                    raise ProgrammingError(
-                        f"Error: no field {key} available in API response : {objs}",
-                    )
+            if isinstance(current_obj, dict) and leaf in current_obj:
+                obj[value] = current_obj[leaf]
+            else:
+                #    _logger.info(
+                #        "field %s of %s unavailable in API response : %s",
+                #        leaf,
+                #        value,
+                #        objs,
+                #    )
+                obj[value] = None
 
-            _logger.debug("output: %s", output)
-            yield output
+        for key, value in _GC_FIELDS.items():
+            # _logger.debug("traitement de %s, %s", key, value)
+            if key in obj:
+                if obj[key] is not None:
+                    output[key] = obj[key]
+            else:
+                raise ProgrammingError(
+                    f"Error: no field {key} available in API response : {obj}",
+                )
+
+        # _logger.debug("output: %s", output)
+        return output
