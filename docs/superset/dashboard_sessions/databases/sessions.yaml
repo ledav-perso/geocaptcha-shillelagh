@@ -1,0 +1,27 @@
+database_name: sessions
+sqlalchemy_uri: shillelagh+safe://
+cache_timeout: null
+expose_in_sqllab: true
+allow_run_async: false
+allow_ctas: false
+allow_cvas: false
+allow_dml: false
+allow_file_upload: false
+extra:
+  allows_virtual_table_explore: true
+  engine_params:
+    connect_args:
+      adapters:
+      - geocaptcha
+      adapter_kwargs:
+        geocaptcha:
+          base_url: http://flocon2:3000/api/v1/admin
+          app_id: admin
+          api_key: YW16ZWFsdXZhenVvdmhhbXZoYW11dmhhZXBydXZoYWVwdmhhb211aAo=
+          log_level: DEBUG
+          page_size: 101
+          limit_size: 999
+impersonate_user: false
+configuration_method: sqlalchemy_form
+uuid: 275c0e5a-7287-405c-8fea-64d304b7b3a1
+version: 1.0.0

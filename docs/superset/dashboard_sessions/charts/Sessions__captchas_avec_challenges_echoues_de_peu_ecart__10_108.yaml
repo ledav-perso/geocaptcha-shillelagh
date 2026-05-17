@@ -1,0 +1,86 @@
+slice_name: "Sessions : captchas avec challenges \xE9chou\xE9s de peu (\xE9cart <\
+  \ 10)..."
+description: null
+certified_by: null
+certification_details: null
+viz_type: pie
+params:
+  datasource: 22__table
+  viz_type: pie
+  matrixify_enable: false
+  matrixify_mode_columns: disabled
+  matrixify_dimension_selection_mode_columns: members
+  matrixify_dimension_columns:
+    dimension: ''
+    values: []
+  matrixify_topn_value_columns: 10
+  matrixify_all_sort_by_columns: a_to_z
+  matrixify_topn_order_columns: true
+  matrixify_show_column_headers: true
+  matrixify_fit_columns_dynamically: true
+  matrixify_mode_rows: disabled
+  matrixify_dimension_selection_mode_rows: members
+  matrixify_dimension_rows:
+    dimension: ''
+    values: []
+  matrixify_topn_value_rows: 10
+  matrixify_all_sort_by_rows: a_to_z
+  matrixify_topn_order_rows: true
+  matrixify_show_row_labels: true
+  matrixify_row_height: 300
+  matrixify_charts_per_row: 4
+  matrixify_cell_title_template: ''
+  groupby:
+  - captcha_challenge_name
+  metric: count
+  adhoc_filters:
+  - expressionType: SIMPLE
+    subject: success
+    operator: IN
+    operatorId: IN
+    comparator:
+    - false
+    clause: WHERE
+    sqlExpression: null
+    isExtra: false
+    isNew: false
+    datasourceWarning: false
+    filterOptionName: filter_7ve2n7e15i8_lpay32uwhsm
+  - expressionType: SQL
+    sqlExpression: captcha_challenge_angle - response_angle <= 10
+    clause: WHERE
+    subject: null
+    operator: null
+    comparator: null
+    isExtra: false
+    isNew: false
+    datasourceWarning: false
+    filterOptionName: filter_rfhnkfd7k4_gbamz6fmsrn
+  row_limit: 100
+  sort_by_metric: true
+  color_scheme: supersetColors
+  show_labels_threshold: 5
+  threshold_for_other: 0
+  show_legend: true
+  legendType: scroll
+  legendOrientation: top
+  label_type: key
+  number_format: SMART_NUMBER
+  date_format: smart_date
+  show_labels: true
+  labels_outside: true
+  label_line: false
+  show_total: false
+  outerRadius: 70
+  donut: false
+  innerRadius: 30
+  extra_form_data: {}
+  dashboards:
+  - 10
+query_context: '{"datasource":{"id":22,"type":"table"},"force":false,"queries":[{"filters":[{"col":"success","op":"IN","val":[false]}],"extras":{"having":"","where":"(captcha_challenge_angle
+  - response_angle <= 10)"},"applied_time_extras":{},"columns":["captcha_challenge_name"],"metrics":["count"],"orderby":[["count",false]],"annotation_layers":[],"row_limit":100,"series_limit":0,"group_others_when_limit_reached":false,"order_desc":true,"url_params":{},"custom_params":{},"custom_form_data":{},"post_processing":[{"operation":"contribution","options":{"columns":["count"],"rename_columns":["count__contribution"]}}]}],"form_data":{"datasource":"22__table","viz_type":"pie","matrixify_enable":false,"matrixify_mode_columns":"disabled","matrixify_dimension_selection_mode_columns":"members","matrixify_dimension_columns":{"dimension":"","values":[]},"matrixify_topn_value_columns":10,"matrixify_all_sort_by_columns":"a_to_z","matrixify_topn_order_columns":true,"matrixify_show_column_headers":true,"matrixify_fit_columns_dynamically":true,"matrixify_mode_rows":"disabled","matrixify_dimension_selection_mode_rows":"members","matrixify_dimension_rows":{"dimension":"","values":[]},"matrixify_topn_value_rows":10,"matrixify_all_sort_by_rows":"a_to_z","matrixify_topn_order_rows":true,"matrixify_show_row_labels":true,"matrixify_row_height":300,"matrixify_charts_per_row":4,"matrixify_cell_title_template":"","groupby":["captcha_challenge_name"],"metric":"count","adhoc_filters":[{"expressionType":"SIMPLE","subject":"success","operator":"IN","operatorId":"IN","comparator":[false],"clause":"WHERE","sqlExpression":null,"isExtra":false,"isNew":false,"datasourceWarning":false,"filterOptionName":"filter_7ve2n7e15i8_lpay32uwhsm"},{"expressionType":"SQL","sqlExpression":"captcha_challenge_angle
+  - response_angle <= 10","clause":"WHERE","subject":null,"operator":null,"comparator":null,"isExtra":false,"isNew":false,"datasourceWarning":false,"filterOptionName":"filter_rfhnkfd7k4_gbamz6fmsrn"}],"row_limit":100,"sort_by_metric":true,"color_scheme":"supersetColors","show_labels_threshold":5,"threshold_for_other":0,"show_legend":true,"legendType":"scroll","legendOrientation":"top","label_type":"key","number_format":"SMART_NUMBER","date_format":"smart_date","show_labels":true,"labels_outside":true,"label_line":false,"show_total":false,"outerRadius":70,"donut":false,"innerRadius":30,"extra_form_data":{},"dashboards":[10],"force":false,"result_format":"json","result_type":"full"},"result_format":"json","result_type":"full"}'
+cache_timeout: null
+uuid: 8d10c93b-2dc7-4b8f-94a4-db3fa0f25e0b
+version: 1.0.0
+dataset_uuid: 1fe62e6b-ec53-4383-bea3-e6fbdd4e7ce8

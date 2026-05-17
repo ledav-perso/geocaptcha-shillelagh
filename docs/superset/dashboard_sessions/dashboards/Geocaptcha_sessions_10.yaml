@@ -1,0 +1,374 @@
+dashboard_title: Geocaptcha / sessions
+description: null
+css: ''
+slug: null
+certified_by: ''
+certification_details: ''
+published: false
+uuid: 3eae67ca-06ab-4077-bf3c-f7d100ee8dc4
+position:
+  CHART-explore-104-1:
+    children: []
+    id: CHART-explore-104-1
+    meta:
+      chartId: 104
+      height: 50
+      sliceName: Sessions / sucess & attempts
+      uuid: c846d7c4-3c92-42ed-887a-cd0dc019529b
+      width: 4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-Eoogrk2R7whwM6FvXLVmK
+    type: CHART
+  CHART-explore-105-1:
+    children: []
+    id: CHART-explore-105-1
+    meta:
+      chartId: 105
+      height: 50
+      sliceName: "Sessions tri\xE9es par IP source"
+      uuid: 044a1201-a9f2-4dc6-a725-6bbb1ef6edcf
+      width: 4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-Eoogrk2R7whwM6FvXLVmK
+    type: CHART
+  CHART-explore-106-1:
+    children: []
+    id: CHART-explore-106-1
+    meta:
+      chartId: 106
+      height: 50
+      sliceName: "Sessions / r\xE9partition des \xE9carts d'angle"
+      uuid: 8e9d403f-1b5f-4659-ba50-d59f765be0f6
+      width: 4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-Eoogrk2R7whwM6FvXLVmK
+    type: CHART
+  CHART-explore-107-1:
+    children: []
+    id: CHART-explore-107-1
+    meta:
+      chartId: 107
+      height: 50
+      sliceName: "Sessions / qt\xE9 quotidienne"
+      uuid: 1a3084c6-73b4-4cc7-b3ef-e5d3433ef692
+      width: 4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-WCUgAztVDaCOFPfLDqm7v
+    type: CHART
+  CHART-explore-108-1:
+    children: []
+    id: CHART-explore-108-1
+    meta:
+      chartId: 108
+      height: 50
+      sliceName: "Sessions : captchas avec challenges \xE9chou\xE9s de peu (\xE9cart\
+        \ < 10)..."
+      uuid: 8d10c93b-2dc7-4b8f-94a4-db3fa0f25e0b
+      width: 4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-WCUgAztVDaCOFPfLDqm7v
+    type: CHART
+  CHART-explore-109-1:
+    children: []
+    id: CHART-explore-109-1
+    meta:
+      chartId: 109
+      height: 50
+      sliceName: "Sessions 10 referers avec le plus de challenges mal g\xE9r\xE9s\
+        \ (attempts != 1)"
+      uuid: 1ffe4e24-f6e8-4276-951d-92698e59e3aa
+      width: 4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-WCUgAztVDaCOFPfLDqm7v
+    type: CHART
+  DASHBOARD_VERSION_KEY: v2
+  GRID_ID:
+    children:
+    - ROW-Eoogrk2R7whwM6FvXLVmK
+    - ROW-WCUgAztVDaCOFPfLDqm7v
+    id: GRID_ID
+    parents:
+    - ROOT_ID
+    type: GRID
+  HEADER_ID:
+    id: HEADER_ID
+    meta:
+      text: Geocaptcha / sessions
+    type: HEADER
+  ROOT_ID:
+    children:
+    - GRID_ID
+    id: ROOT_ID
+    type: ROOT
+  ROW-Eoogrk2R7whwM6FvXLVmK:
+    children:
+    - CHART-explore-104-1
+    - CHART-explore-105-1
+    - CHART-explore-106-1
+    id: ROW-Eoogrk2R7whwM6FvXLVmK
+    meta:
+      background: BACKGROUND_TRANSPARENT
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    type: ROW
+  ROW-WCUgAztVDaCOFPfLDqm7v:
+    children:
+    - CHART-explore-107-1
+    - CHART-explore-108-1
+    - CHART-explore-109-1
+    id: ROW-WCUgAztVDaCOFPfLDqm7v
+    meta:
+      background: BACKGROUND_TRANSPARENT
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    type: ROW
+metadata:
+  chart_configuration:
+    '104':
+      id: 104
+      crossFilters:
+        scope: global
+        chartsInScope:
+        - 105
+        - 106
+        - 107
+        - 108
+        - 109
+    '105':
+      id: 105
+      crossFilters:
+        scope: global
+        chartsInScope:
+        - 104
+        - 106
+        - 107
+        - 108
+        - 109
+    '106':
+      id: 106
+      crossFilters:
+        scope: global
+        chartsInScope:
+        - 104
+        - 105
+        - 107
+        - 108
+        - 109
+    '107':
+      id: 107
+      crossFilters:
+        scope: global
+        chartsInScope:
+        - 104
+        - 105
+        - 106
+        - 108
+        - 109
+    '108':
+      id: 108
+      crossFilters:
+        scope: global
+        chartsInScope:
+        - 104
+        - 105
+        - 106
+        - 107
+        - 109
+    '109':
+      id: 109
+      crossFilters:
+        scope: global
+        chartsInScope:
+        - 104
+        - 105
+        - 106
+        - 107
+        - 108
+  global_chart_configuration:
+    scope:
+      rootPath:
+      - ROOT_ID
+      excluded: []
+    chartsInScope:
+    - 104
+    - 105
+    - 106
+    - 107
+    - 108
+    - 109
+  native_filter_configuration:
+  - controlValues:
+      enableEmptyFilter: false
+    defaultValueQueriesData: null
+    description: ''
+    filterType: filter_time
+    id: NATIVE_FILTER-mPCL84ke9ddvOAtZO6vSs
+    name: "cr\xE9neau"
+    requiredFirst: {}
+    scope:
+      excluded: []
+      rootPath:
+      - ROOT_ID
+    type: NATIVE_FILTER
+    chartsInScope:
+    - 104
+    - 105
+    - 106
+    - 107
+    - 108
+    - 109
+    tabsInScope: []
+  chart_customization_config: []
+  refresh_frequency: 0
+  show_chart_timestamps: false
+  color_scheme: ''
+  color_scheme_domain: []
+  expanded_slices: {}
+  label_colors: {}
+  shared_label_colors:
+  - count
+  map_label_colors:
+    '0': '#454E7C'
+    '1': '#5AC189'
+    '2': '#FF7F44'
+    '3': '#666666'
+    '4': '#E04355'
+    '5': '#FCC700'
+    '6': '#A868B7'
+    '7': '#3CCCCB'
+    '8': '#A38F79'
+    '10': '#8FD3E4'
+    '11': '#A1A6BD'
+    '14': '#ACE1C4'
+    '21': '#FEC0A1'
+    '32': '#B2B2B2'
+    '34': '#EFA1AA'
+    '41': '#FDE380'
+    '43': '#D3B3DA'
+    '79': '#9EE5E5'
+    '86': '#D1C6BC'
+    '150': '#454E7C'
+    '162': '#5AC189'
+    '184': '#FF7F44'
+    '216': '#666666'
+    '245': '#E04355'
+    '257': '#FCC700'
+    '271': '#A868B7'
+    '303': '#3CCCCB'
+    true, 1: '#1FA8C9'
+    false, 0: '#454E7C'
+    false, 1: '#5AC189'
+    'True': '#3366cc'
+    'False': '#dc3912'
+    count: '#1FA8C9'
+    <NULL>: '#A38F79'
+    '-308': '#8FD3E4'
+    '-306': '#A1A6BD'
+    '-292': '#ACE1C4'
+    '-288': '#FEC0A1'
+    '-281': '#B2B2B2'
+    '-267': '#EFA1AA'
+    '-233': '#FDE380'
+    '-194': '#D3B3DA'
+    '-191': '#9EE5E5'
+    '-183': '#D1C6BC'
+    '-177': '#D1C6BC'
+    '-174': '#454E7C'
+    '-171': '#5AC189'
+    '-158': '#FF7F44'
+    '-153': '#666666'
+    '-148': '#E04355'
+    '-123': '#FCC700'
+    '-88': '#A868B7'
+    '-82': '#3CCCCB'
+    '-60': '#A38F79'
+    '-52': '#8FD3E4'
+    '-48': '#A1A6BD'
+    '-37': '#ACE1C4'
+    '-34': '#FEC0A1'
+    '-29': '#B2B2B2'
+    '-6': '#EFA1AA'
+    '-5': '#FDE380'
+    '-4': '#D3B3DA'
+    '-3': '#9EE5E5'
+    '-2': '#9EE5E5'
+    '-1': '#D1C6BC'
+    9852-34000: '#1FA8C9'
+    28656-84087: '#454E7C'
+    28627-97424: '#5AC189'
+    28853-48069: '#FF7F44'
+    28577-25021: '#666666'
+    28576-84007: '#E04355'
+    28401-84087: '#FCC700'
+    8295-29000: '#A868B7'
+    814-03000: '#3CCCCB'
+    4336-16000: '#A38F79'
+    28551-18033: '#8FD3E4'
+    28467-24322: '#A1A6BD'
+    28455-78646: '#ACE1C4'
+    26359-90000: '#FEC0A1'
+    2222-08000: '#B2B2B2'
+    19899-67000: '#EFA1AA'
+    4650-17000: '#FDE380'
+    28773-76351: '#D3B3DA'
+    28761-81004: '#9EE5E5'
+    28738-65192: '#D1C6BC'
+    28613-39154: '#454E7C'
+    28609-39500: '#5AC189'
+    28591-54395: '#FF7F44'
+    28575-84007: '#666666'
+    28562-69123: '#E04355'
+    28560-69123: '#FCC700'
+    28555-18033: '#A868B7'
+    28549-51454: '#3CCCCB'
+    28546-51454: '#A38F79'
+    28540-28085: '#8FD3E4'
+    28520-76351: '#A1A6BD'
+    28507-81004: '#ACE1C4'
+    28493-13004: '#FEC0A1'
+    28483-65192: '#B2B2B2'
+    28462-24322: '#EFA1AA'
+    28459-78646: '#FDE380'
+    28452-78646: '#D3B3DA'
+    28450-77186: '#9EE5E5'
+    28448-77186: '#D1C6BC'
+    28445-77186: '#D1C6BC'
+    28427-11069: '#454E7C'
+    28425-11069: '#5AC189'
+    28422-31555: '#FF7F44'
+    28421-31555: '#666666'
+    28414-67482: '#E04355'
+    28412-67482: '#FCC700'
+    28408-67482: '#A868B7'
+    28407-67482: '#3CCCCB'
+    28404-84087: '#A38F79'
+    28396-33063: '#8FD3E4'
+    28388-33063: '#A1A6BD'
+    28339-80021: '#ACE1C4'
+    2490-09000: '#FEC0A1'
+    21421-73000: '#B2B2B2'
+    19754-66000: '#EFA1AA'
+    14957-50000: '#FDE380'
+    rgp.ign.fr: '#1FA8C9'
+    geoplateforme-sandbox-2-gpf-iam.dev.gpf-tech.ign.fr: '#454E7C'
+    geocaptcha.ign.fr: '#5AC189'
+    127.0.0.1:8080: '#FF7F44'
+  timed_refresh_immune_slices: []
+  cross_filters_enabled: true
+  default_filters: '{}'
+theme_uuid: null
+version: 1.0.0

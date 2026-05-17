@@ -29,8 +29,8 @@ fichier responses.json donne un exemple de réponse de l'API Geocaptcha
         "angle": 0,
         "h": ""
       },
-      "createdAt": "2026-02-20T19: 18: 38.641Z",
-      "updatedAt": "2026-02-20T19: 18: 48.075Z"
+      "createdAt": "2026-02-20T19:18:38.641Z",
+      "updatedAt": "2026-02-20T19:18:48.075Z"
     }
   ],
   "nbObjects": 100,
