@@ -50,27 +50,27 @@ _GC_FIELDS = {
     "captcha_type": String(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
         order=Order.ANY,
-        exact=True,
+        exact=False,
     ),  # "kingpin",
     "captcha_challenge_name": String(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
         order=Order.ANY,
-        exact=True,
+        exact=False,
     ),  # "25757-88000",
     "captcha_challenge_angle": Integer(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
         order=Order.ANY,
-        exact=True,
+        exact=False,
     ),  # 250,
     "ip": String(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
         order=Order.ANY,
-        exact=True,
+        exact=False,
     ),  # "::ffff: 127.0.0.1",
     "success": Boolean(
         filters=[Equal, NotEqual, IsNull, IsNotNull],
         order=Order.NONE,
-        exact=True,
+        exact=False,
     ),  # false,
     "attempts": Integer(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
@@ -80,32 +80,32 @@ _GC_FIELDS = {
     "begin": ISODateTime(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
         order=Order.ANY,
-        exact=True,
+        exact=False,
     ),  # "2026-02-20T19:18:38.622Z",
     "end": ISODateTime(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
         order=Order.ANY,
-        exact=True,
+        exact=False,
     ),  # null,
     "referer": String(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
         order=Order.ANY,
-        exact=True,
+        exact=False,
     ),  # "application-client-13e274287b298d1191008af11625c30513ddd01d.eu",
     "visited": Boolean(
         filters=[Equal, NotEqual, IsNull, IsNotNull],
         order=Order.NONE,
-        exact=True,
+        exact=False,
     ),  # true,
     "response_angle": Integer(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
         order=Order.ANY,
-        exact=True,
+        exact=False,
     ),  # 0,
     "response_h": String(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
         order=Order.ANY,
-        exact=True,
+        exact=False,
     ),  # "",
 }
 
