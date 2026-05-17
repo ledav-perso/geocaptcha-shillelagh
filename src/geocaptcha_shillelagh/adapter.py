@@ -49,22 +49,22 @@ _GC_PATH = "sessions"
 _GC_FIELDS = {
     "captcha_type": String(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
-        order=Order.ANY,
+        order=Order.NONE,
         exact=False,
     ),  # "kingpin",
     "captcha_challenge_name": String(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
-        order=Order.ANY,
+        order=Order.NONE,
         exact=False,
     ),  # "25757-88000",
     "captcha_challenge_angle": Integer(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
-        order=Order.ANY,
+        order=Order.NONE,
         exact=False,
     ),  # 250,
     "ip": String(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
-        order=Order.ANY,
+        order=Order.NONE,
         exact=False,
     ),  # "::ffff: 127.0.0.1",
     "success": Boolean(
@@ -74,22 +74,22 @@ _GC_FIELDS = {
     ),  # false,
     "attempts": Integer(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
-        order=Order.ANY,
+        order=Order.NONE,
         exact=True,
     ),  # 1,
     "begin": ISODateTime(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
-        order=Order.ANY,
+        order=Order.NONE,
         exact=False,
     ),  # "2026-02-20T19:18:38.622Z",
     "end": ISODateTime(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
-        order=Order.ANY,
+        order=Order.NONE,
         exact=False,
     ),  # null,
     "referer": String(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
-        order=Order.ANY,
+        order=Order.NONE,
         exact=False,
     ),  # "application-client-13e274287b298d1191008af11625c30513ddd01d.eu",
     "visited": Boolean(
@@ -99,12 +99,12 @@ _GC_FIELDS = {
     ),  # true,
     "response_angle": Integer(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
-        order=Order.ANY,
+        order=Order.NONE,
         exact=False,
     ),  # 0,
     "response_h": String(
         filters=[Range, Equal, NotEqual, IsNull, IsNotNull],
-        order=Order.ANY,
+        order=Order.NONE,
         exact=False,
     ),  # "",
 }
