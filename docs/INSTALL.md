@@ -46,12 +46,12 @@ placer dans Engine parameters :
         "app_id":"admin",
         "api_key":"**********************************",
         "log_level":"ERROR",
-        "page_size":1000
+        "page_size":1000,
+        "limit_size":10000
       }
     }
   }
 }
-
 ```
 
 paramètre | valeur par défaut | description
@@ -60,4 +60,5 @@ base_url | https://geocaptcha.ign.fr/api/v1/admin | Endpoint API Geocaptcha
 app_id | NA | compte admin
 api_key | NA | mdp admin
 log_level | ERROR | log level du composant
-page_size | 1000 | nombre de documents extraits
+page_size | 1000 | nombre de documents extraits par page
+total_size | 10000 | nombre de documents maximum extraits

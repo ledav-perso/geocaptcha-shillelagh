@@ -122,6 +122,9 @@ _GC_NESTED_FIELDS = [
 # default pagination size
 _GC_PAGE_SIZE = 1000
 
+# default max extract sessions
+_GC_LIMIT_SIZE = 10000
+
 # extract cursor from URL
 _GC_URI_CURSOR = re.compile(r"cursor=(\d+)")
 
@@ -177,6 +180,7 @@ class GeocaptchaSessionAdapter(Adapter):
         base_url: str = _GC_ADMIN_API,
         log_level: str = "ERROR",
         page_size: int = _GC_PAGE_SIZE,
+        limit_size: int = _GC_LIMIT_SIZE,
     ):
         _logger.info("def GeocaptchaAdapter.__init__")
 
@@ -205,6 +209,8 @@ class GeocaptchaSessionAdapter(Adapter):
             _logger.setLevel(log_level)
 
         self.page_size = page_size
+
+        self.limit_size = limit_size
 
     def get_columns(self) -> dict[str, Field]:
         """columns return for current collection"""
@@ -236,6 +242,7 @@ class GeocaptchaSessionAdapter(Adapter):
 
         cursor = None
         page_number = 0
+        num = 0
         while True:
             payload = self._prepare_request(cursor)
             page_number += 1
@@ -258,7 +265,14 @@ class GeocaptchaSessionAdapter(Adapter):
             )
 
             for i, obj in enumerate(sessions):
-                yield self._parse_row(i, obj)
+                if num < self.limit_size:
+                    yield self._parse_row(num + i, obj)
+                    num += 1
+                else:
+                    _logger.info(
+                        "limit size achieved on collecting sessions: %d", num + 1
+                    )
+                    break
 
             if "next" in payload:
                 matched = _GC_URI_CURSOR.search(payload["next"])
