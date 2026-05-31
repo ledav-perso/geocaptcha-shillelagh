@@ -89,3 +89,38 @@ b457617cd309:/# mongoimport -v --collection=sessions --db=geocaptcha --uri 'mong
 2026-05-13T19:16:11.639+0000    connected to node type: standalone
 2026-05-13T19:16:11.737+0000    1000 document(s) imported successfully. 0 document(s) failed to import.
 ```
+
+## Générer un user pour Valkey (ou Redis)
+
+**Objectif :**
+
+créer un compte avec les accès à database 1
+
+**commandes :**
+
+docker compose exec -it redis bash
+
+root@92a357862e25:/data# redis-cli
+```
+127.0.0.1:6379> help
+redis-cli 7.4.8
+To get help about Redis commands type:
+      "help @<group>" to get a list of commands in <group>
+      "help <command>" for help on <command>
+      "help <tab>" to get a list of possible help topics
+      "quit" to exit
+
+To set redis-cli preferences:
+      ":set hints" enable online hints
+      ":set nohints" disable online hints
+Set your preferences in ~/.redisclirc
+```
+
+127.0.0.1:6379> ACL GENPASS
+```
+"e0c89cd1c7bb0557fa974f4a414dfd2a30d8fd4680a339b2f2c90d9c191ac377"
+```
+127.0.0.1:6379> ACL SETUSER geocaptcha on +@all ~* &1 >e0c89cd1c7bb0557fa974f4a414dfd2a30d8fd4680a339b2f2c90d9c191ac377
+```
+OK
+```

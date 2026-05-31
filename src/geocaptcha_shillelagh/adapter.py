@@ -18,10 +18,12 @@ optional parameters :
 import logging
 import re
 
+from datetime import timedelta
 from collections.abc import Iterator
 from typing import Any, Optional
 
-import requests
+from requests_cache import CachedSession, RedisCache
+from valkey import Valkey
 
 from shillelagh.adapters.base import Adapter
 from shillelagh.exceptions import ProgrammingError
@@ -123,7 +125,10 @@ _GC_NESTED_FIELDS = [
 _GC_PAGE_SIZE = 1000
 
 # default max extract sessions
-_GC_LIMIT_SIZE = 10000
+_GC_LIMIT_SIZE = 100000
+
+# cache expiration in seconds
+_GC_CACHE_EXPIRATION = 14400
 
 # extract cursor from URL
 _GC_URI_CURSOR = re.compile(r"cursor=(\d+)")
@@ -181,6 +186,12 @@ class GeocaptchaSessionAdapter(Adapter):
         log_level: str = "ERROR",
         page_size: int = _GC_PAGE_SIZE,
         limit_size: int = _GC_LIMIT_SIZE,
+        cache_expiration: int = _GC_CACHE_EXPIRATION,
+        cache_server: str = "locahost",
+        cache_port: int = 6379,
+        cache_db: int = 1,
+        cache_username: str = "geocaptcha",
+        cache_password: str = "geocaptcha",
     ):
         _logger.info("def GeocaptchaAdapter.__init__")
 
@@ -212,6 +223,20 @@ class GeocaptchaSessionAdapter(Adapter):
 
         self.limit_size = limit_size
 
+        connection = Valkey(
+            host=cache_server,
+            port=cache_port,
+            db=cache_db,
+            password=cache_password,
+            username=cache_username,
+        )
+        backend = RedisCache(connection=connection)
+        self._session = CachedSession(
+            cache_name="geocaptcha",
+            backend=backend,
+            expire_after=timedelta(seconds=cache_expiration),
+        )
+
     def get_columns(self) -> dict[str, Field]:
         """columns return for current collection"""
         _logger.info("def get_columns")
@@ -230,7 +255,7 @@ class GeocaptchaSessionAdapter(Adapter):
 
         data ordered with newerFirst
         pagination
-        no cache
+        valkey cache
         """
         _logger.info("def get_data")
         _logger.debug(
@@ -299,7 +324,7 @@ class GeocaptchaSessionAdapter(Adapter):
         if cursor is not None:
             params["cursor"] = cursor
 
-        response = requests.get(
+        response = self._session.get(
             url,
             headers=headers,
             params=params,

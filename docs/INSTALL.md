@@ -42,23 +42,26 @@ placer dans Engine parameters :
     {
       "geocaptcha":
       {
-        "base_url":"http://flocon2:3000/api/v1/admin",
         "app_id":"admin",
-        "api_key":"**********************************",
-        "log_level":"ERROR",
-        "page_size":1000,
-        "limit_size":10000
+        "api_key":"****************************",
+        "cache_password": "**************************"
       }
     }
   }
 }
 ```
 
-paramètre | valeur par défaut | description
------ | ----- | ----------
-base_url | https://geocaptcha.ign.fr/api/v1/admin | Endpoint API Geocaptcha
-app_id | NA | compte admin
-api_key | NA | mdp admin
-log_level | ERROR | log level du composant
-page_size | 1000 | nombre de documents extraits par page
-total_size | 10000 | nombre de documents maximum extraits
+paramètre        | valeur par défaut                      | description
+-----            | -----                                  | ----------
+base_url         | https://geocaptcha.ign.fr/api/v1/admin | Endpoint API Geocaptcha
+app_id           | NA                                     | compte admin
+api_key          | NA                                     | mdp admin
+log_level        | ERROR                                  | log level du composant
+page_size        | 1000                                   | nombre de documents extraits par page
+limit_size       | 100000                                 | nb maximum de documents téléchargés
+cache_expiration | 14400                                  | durée du cache en secondes
+cache_server     | locahost                               | hostname du serveur Valkey / Redis
+cache_port       | 6379                                   | port du serveur Valkey / Redis
+cache_db         | 1                                      | numéro de la base de données
+cache_username   | geocaptcha                             | Valkey username
+cache_password   | geocaptcha                             | Valkey password
