@@ -18,7 +18,6 @@ optional parameters :
 import logging
 import re
 
-from datetime import timedelta
 from collections.abc import Iterator
 from typing import Any, Optional
 
@@ -189,7 +188,7 @@ class GeocaptchaSessionAdapter(Adapter):
         cache_expiration: int = _GC_CACHE_EXPIRATION,
         cache_server: str = "locahost",
         cache_port: int = 6379,
-        cache_db: int = 1,
+        cache_db: int = 15,
         cache_username: str = "geocaptcha",
         cache_password: str = "geocaptcha",
     ):
@@ -232,9 +231,10 @@ class GeocaptchaSessionAdapter(Adapter):
         )
         backend = RedisCache(connection=connection)
         self._session = CachedSession(
-            cache_name="geocaptcha",
+            "geocaptcha",
             backend=backend,
-            expire_after=timedelta(seconds=cache_expiration),
+            expire_after=cache_expiration,
+            stale_while_revalidate=True,
         )
 
     def get_columns(self) -> dict[str, Field]:

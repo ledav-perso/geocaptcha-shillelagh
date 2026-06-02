@@ -62,6 +62,6 @@ limit_size       | 100000                                 | nb maximum de docum
 cache_expiration | 14400                                  | durée du cache en secondes
 cache_server     | locahost                               | hostname du serveur Valkey / Redis
 cache_port       | 6379                                   | port du serveur Valkey / Redis
-cache_db         | 1                                      | numéro de la base de données
+cache_db         | 15                                     | numéro de la base de données
 cache_username   | geocaptcha                             | Valkey username
 cache_password   | geocaptcha                             | Valkey password
